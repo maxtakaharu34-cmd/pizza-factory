@@ -3,17 +3,17 @@ import { CANVAS_W, CANVAS_H, POWERUP_CONFIG } from '../game/constants';
 import type { CharId } from '../game/constants';
 import { Player, Platform, Coin, Powerup, Enemy, buildLevel, rectsOverlap } from '../game/entities';
 import type { LevelData } from '../game/levels';
-import { initAudio, sfxJump, sfxCoin, sfxHit, sfxPowerup, sfxDie, sfxClear, sfxStep } from '../game/sounds';
+import { initAudio, sfxジャンプ, sfxCoin, sfxHit, sfxPowerup, sfxDie, sfxClear, sfxStep } from '../game/sounds';
 
 const PIZZA_CHARS = [
-  { id: 'chef',   name: 'Chef',  color: '#fff8f0', accent: '#e74c3c', hat: '#fff' },
-  { id: 'slice',  name: 'Slice', color: '#f39c12', accent: '#e74c3c', hat: '#27ae60' },
-  { id: 'cook',   name: 'Cook',  color: '#ffd1a0', accent: '#c0392b', hat: '#ecf0f1' },
+  { id: 'chef',   name: 'シェフ',  color: '#fff8f0', accent: '#e74c3c', hat: '#fff' },
+  { id: 'slice',  name: 'スライス', color: '#f39c12', accent: '#e74c3c', hat: '#27ae60' },
+  { id: 'cook',   name: '調理',  color: '#ffd1a0', accent: '#c0392b', hat: '#ecf0f1' },
 ];
 
-const PIZZA_LEVELS: LevelData[] = [
+const PIZZA_レベルS: LevelData[] = [
   {
-    id:1, name:'Dough Room', bgColors:['#ff6b35','#ff9a5c'] as [string,string],
+    id:1, name:'生地ルーム', bgColors:['#ff6b35','#ff9a5c'] as [string,string],
     width:3200, spawnX:80, spawnY:300, goal:{x:3100,y:200},
     platforms:[
       {x:0,y:400,w:360},{x:430,y:380,w:200},{x:690,y:350,w:180},
@@ -27,7 +27,7 @@ const PIZZA_LEVELS: LevelData[] = [
     enemies:[{x:150,y:368,type:'walk'},{x:460,y:348,type:'walk'},{x:760,y:318,type:'fly'},{x:1020,y:288,type:'jump'},{x:1520,y:238,type:'walk'},{x:1820,y:218,type:'fly'},{x:2120,y:198,type:'jump'},{x:2620,y:198,type:'walk'}],
   },
   {
-    id:2, name:'Sauce Factory', bgColors:['#c0392b','#e74c3c'] as [string,string],
+    id:2, name:'ソース工場', bgColors:['#c0392b','#e74c3c'] as [string,string],
     width:3600, spawnX:80, spawnY:350, goal:{x:3500,y:160},
     platforms:[
       {x:0,y:420,w:280},{x:360,y:390,w:200},{x:630,y:360,w:180,type:'moving'},
@@ -41,7 +41,7 @@ const PIZZA_LEVELS: LevelData[] = [
     enemies:[{x:200,y:388,type:'walk'},{x:420,y:358,type:'fly'},{x:720,y:328,type:'jump'},{x:1020,y:288,type:'walk'},{x:1320,y:258,type:'fly'},{x:1620,y:198,type:'jump'},{x:1920,y:178,type:'walk'},{x:2320,y:198,type:'fly'},{x:2620,y:158,type:'jump'},{x:2920,y:138,type:'walk'}],
   },
   {
-    id:3, name:'Cheese Cave', bgColors:['#f39c12','#d35400'] as [string,string],
+    id:3, name:'チーズの洞窟', bgColors:['#f39c12','#d35400'] as [string,string],
     width:4000, spawnX:80, spawnY:360, goal:{x:3900,y:150},
     platforms:[
       {x:0,y:400,w:240},{x:320,y:370,w:180,type:'moving'},{x:580,y:340,w:200},
@@ -178,13 +178,13 @@ function draw(ctx:CanvasRenderingContext2D, players:Player[], platforms:Platform
     const ox=i===0?10:CANVAS_W-180;
     ctx.fillStyle='rgba(80,20,0,0.6)';rr(ctx,ox,8,165,48,8);ctx.fill();
     ctx.fillStyle='#f39c12';ctx.font='bold 13px monospace';
-    ctx.fillText(`P${i+1} ${PIZZA_CHARS.find(c=>c.id===p.charId)?.name||'Chef'}`,ox+10,26);
+    ctx.fillText(`P${i+1} ${PIZZA_CHARS.find(c=>c.id===p.charId)?.name||'シェフ'}`,ox+10,26);
     ctx.fillStyle='#e74c3c';ctx.font='bold 12px monospace';ctx.fillText(`🍅 ${p.coins}`,ox+10,43);
     ctx.fillStyle='#fff';ctx.fillText(`${p.score}pt`,ox+65,43);
   });
   ctx.fillStyle='rgba(80,20,0,0.6)';rr(ctx,CANVAS_W/2-60,8,120,28,8);ctx.fill();
   ctx.fillStyle='#f39c12';ctx.font='bold 13px monospace';ctx.textAlign='center';
-  ctx.fillText(`LEVEL ${level} / ${total}`,CANVAS_W/2,26);ctx.textAlign='left';
+  ctx.fillText(`レベル ${level} / ${total}`,CANVAS_W/2,26);ctx.textAlign='left';
 }
 
 export default function Index() {
@@ -204,14 +204,14 @@ export default function Index() {
   const levelRef=useRef(1);
   const soundRef=useRef(true);
   const animRef=useRef(0);
-  const levelDataRef=useRef(PIZZA_LEVELS[0]);
+  const levelDataRef=useRef(PIZZA_レベルS[0]);
 
   useEffect(()=>{screenRef.current=screen;},[screen]);
   useEffect(()=>{soundRef.current=soundOn;},[soundOn]);
   const sfx=useCallback((fn:()=>void)=>{if(soundRef.current)fn();},[]);
 
   const loadLevel=useCallback((idx:number,char:string)=>{
-    const data=PIZZA_LEVELS[idx];levelDataRef.current=data;
+    const data=PIZZA_レベルS[idx];levelDataRef.current=data;
     const{platforms,coins,powerups,enemies}=buildLevel(data);
     platformsRef.current=platforms;coinsRef.current=coins;powerupsRef.current=powerups;enemiesRef.current=enemies;camXRef.current=0;
     playersRef.current=[new Player(data.spawnX,data.spawnY,char as CharId,0)];
@@ -225,9 +225,9 @@ export default function Index() {
   useEffect(()=>{
     const down=(e:KeyboardEvent)=>{
       keysRef.current.add(e.key);
-      if(['ArrowUp',' '].includes(e.key)){e.preventDefault();const p=playersRef.current[0];if(p&&(p.onGround||p.jumpsLeft>0)){p.jump();sfx(sfxJump);}}
+      if(['ArrowUp',' '].includes(e.key)){e.preventDefault();const p=playersRef.current[0];if(p&&(p.onGround||p.jumpsLeft>0)){p.jump();sfx(sfxジャンプ);}}
       if(e.key==='Enter'){
-        if(screenRef.current==='level_complete'){const n=levelRef.current+1;if(n<=PIZZA_LEVELS.length)startGame(n);else setScreen('menu');}
+        if(screenRef.current==='level_complete'){const n=levelRef.current+1;if(n<=PIZZA_レベルS.length)startGame(n);else setScreen('menu');}
         if(screenRef.current==='gameover')startGame(levelRef.current);
       }
     };
@@ -244,18 +244,18 @@ export default function Index() {
       animRef.current=requestAnimationFrame(loop);
       const s=screenRef.current;const lvl=levelDataRef.current;
       if(s!=='playing'){
-        draw(ctx,playersRef.current,platformsRef.current,coinsRef.current,powerupsRef.current,enemiesRef.current,camXRef.current,lvl,levelRef.current,PIZZA_LEVELS.length);
+        draw(ctx,playersRef.current,platformsRef.current,coinsRef.current,powerupsRef.current,enemiesRef.current,camXRef.current,lvl,levelRef.current,PIZZA_レベルS.length);
         if(s==='level_complete'||s==='gameover'){
           ctx.fillStyle='rgba(0,0,0,0.72)';ctx.fillRect(0,0,CANVAS_W,CANVAS_H);
           ctx.textAlign='center';
           if(s==='level_complete'){
             ctx.fillStyle='#f39c12';ctx.font='bold 36px monospace';ctx.fillText('🍕 CLEAR!',CANVAS_W/2,CANVAS_H/2-50);
-            ctx.fillStyle='#fff';ctx.font='16px monospace';ctx.fillText(`Score: ${playersRef.current[0]?.score||0}`,CANVAS_W/2,CANVAS_H/2);
-            ctx.fillStyle='#ffd700';ctx.font='14px monospace';ctx.fillText('Press ENTER for next level',CANVAS_W/2,CANVAS_H/2+40);
+            ctx.fillStyle='#fff';ctx.font='16px monospace';ctx.fillText(`スコア: ${playersRef.current[0]?.score||0}`,CANVAS_W/2,CANVAS_H/2);
+            ctx.fillStyle='#ffd700';ctx.font='14px monospace';ctx.fillText('ENTERで次のレベル',CANVAS_W/2,CANVAS_H/2+40);
           } else {
-            ctx.fillStyle='#e74c3c';ctx.font='bold 34px monospace';ctx.fillText('GAME OVER',CANVAS_W/2,CANVAS_H/2-40);
-            ctx.fillStyle='#fff';ctx.font='16px monospace';ctx.fillText(`Score: ${playersRef.current[0]?.score||0}`,CANVAS_W/2,CANVAS_H/2+5);
-            ctx.fillStyle='#f39c12';ctx.font='14px monospace';ctx.fillText('Press ENTER to retry',CANVAS_W/2,CANVAS_H/2+45);
+            ctx.fillStyle='#e74c3c';ctx.font='bold 34px monospace';ctx.fillText('ゲームオーバー',CANVAS_W/2,CANVAS_H/2-40);
+            ctx.fillStyle='#fff';ctx.font='16px monospace';ctx.fillText(`スコア: ${playersRef.current[0]?.score||0}`,CANVAS_W/2,CANVAS_H/2+5);
+            ctx.fillStyle='#f39c12';ctx.font='14px monospace';ctx.fillText('ENTERで再挑戦',CANVAS_W/2,CANVAS_H/2+45);
           }
           ctx.textAlign='left';
         }
@@ -286,7 +286,7 @@ export default function Index() {
       if(players.every(p=>!p.alive)){setScreen('gameover');return;}
       coinsRef.current.forEach(c=>c.update());powerupsRef.current.forEach(pu=>pu.update());enemiesRef.current.forEach(e=>e.update(platforms));
       const p1=players[0];if(p1){const t=p1.x-CANVAS_W/3;camXRef.current+=(t-camXRef.current)*0.1;camXRef.current=Math.max(0,Math.min(camXRef.current,lvl.width-CANVAS_W));}
-      draw(ctx,players,platforms,coinsRef.current,powerupsRef.current,enemiesRef.current,camXRef.current,lvl,levelRef.current,PIZZA_LEVELS.length);
+      draw(ctx,players,platforms,coinsRef.current,powerupsRef.current,enemiesRef.current,camXRef.current,lvl,levelRef.current,PIZZA_レベルS.length);
     };
     animRef.current=requestAnimationFrame(loop);
     return()=>cancelAnimationFrame(animRef.current);
@@ -295,7 +295,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#3d0000] via-[#7a1500] to-[#3d0000] flex flex-col items-center justify-center p-4">
       <div className="text-center mb-4">
-        <h1 className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-yellow-300 via-red-400 to-orange-400 bg-clip-text text-transparent">🍕 Pizza Factory</h1>
+        <h1 className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-yellow-300 via-red-400 to-orange-400 bg-clip-text text-transparent">🍕 ピザ工場</h1>
         <p className="text-orange-400/60 text-sm mt-1">Collect tomatoes · Dodge food enemies · Deliver pizzas!</p>
       </div>
       <div className="flex flex-col items-center gap-4 select-none">
@@ -310,23 +310,23 @@ export default function Index() {
               ))}
             </div>
             <div className="flex gap-3">
-              <button onClick={()=>startGame(1)} className="px-8 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl text-lg font-bold hover:scale-105 transition-transform shadow-lg">🍕 Cook!</button>
+              <button onClick={()=>startGame(1)} className="px-8 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl text-lg font-bold hover:scale-105 transition-transform shadow-lg">🍕 調理!</button>
               <button onClick={()=>setSoundOn(s=>!s)} className="px-4 py-3 bg-gray-700 text-white rounded-xl text-sm hover:bg-gray-600">{soundOn?'🔊':'🔇'}</button>
             </div>
-            <p className="text-gray-500 text-xs">←→ Move · ↑ Jump · Collect 🍅 tomatoes · Reach the 🍕</p>
+            <p className="text-gray-500 text-xs">←→ 移動 · ↑ ジャンプ · Collect 🍅 tomatoes · Reach the 🍕</p>
           </div>
         )}
         {screen==='playing'&&(
           <div className="flex flex-col gap-2 md:hidden w-full max-w-xs">
-            <div className="flex justify-center"><button onTouchStart={(e)=>{e.preventDefault();playersRef.current[0]?.jump();sfx(sfxJump);}} className="w-14 h-14 bg-orange-700 rounded-xl text-2xl font-bold text-white active:bg-orange-500 flex items-center justify-center">↑</button></div>
+            <div className="flex justify-center"><button onTouchStart={(e)=>{e.preventDefault();playersRef.current[0]?.jump();sfx(sfxジャンプ);}} className="w-14 h-14 bg-orange-700 rounded-xl text-2xl font-bold text-white active:bg-orange-500 flex items-center justify-center">↑</button></div>
             <div className="flex justify-center gap-3">
               <button onTouchStart={(e)=>{e.preventDefault();keysRef.current.add('ArrowLeft');}} onTouchEnd={(e)=>{e.preventDefault();keysRef.current.delete('ArrowLeft');}} className="w-14 h-14 bg-orange-700 rounded-xl text-2xl font-bold text-white active:bg-orange-500 flex items-center justify-center">←</button>
               <button onTouchStart={(e)=>{e.preventDefault();keysRef.current.add('ArrowRight');}} onTouchEnd={(e)=>{e.preventDefault();keysRef.current.delete('ArrowRight');}} className="w-14 h-14 bg-orange-700 rounded-xl text-2xl font-bold text-white active:bg-orange-500 flex items-center justify-center">→</button>
             </div>
           </div>
         )}
-        {screen==='level_complete'&&<button onClick={()=>{const n=currentLevel+1;if(n<=PIZZA_LEVELS.length)startGame(n);else setScreen('menu');}} className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-bold hover:scale-105">{currentLevel<PIZZA_LEVELS.length?'Next Level →':'🏠 Menu'}</button>}
-        {screen==='gameover'&&<div className="flex gap-3"><button onClick={()=>startGame(currentLevel)} className="px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl font-bold hover:scale-105">Try Again</button><button onClick={()=>setScreen('menu')} className="px-6 py-3 bg-gray-700 text-white rounded-xl font-bold hover:bg-gray-600">Menu</button></div>}
+        {screen==='level_complete'&&<button onClick={()=>{const n=currentLevel+1;if(n<=PIZZA_レベルS.length)startGame(n);else setScreen('menu');}} className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-bold hover:scale-105">{currentLevel<PIZZA_レベルS.length?'次のレベル →':'🏠 Menu'}</button>}
+        {screen==='gameover'&&<div className="flex gap-3"><button onClick={()=>startGame(currentLevel)} className="px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl font-bold hover:scale-105">もう一度</button><button onClick={()=>setScreen('menu')} className="px-6 py-3 bg-gray-700 text-white rounded-xl font-bold hover:bg-gray-600">メニュー</button></div>}
       </div>
     </div>
   );
